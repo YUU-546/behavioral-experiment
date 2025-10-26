@@ -9,14 +9,12 @@ export default function HomePage() {
   const router = useRouter()
 
   const handleTaskSelection = (task: string) => {
-    // 保存任务类型
     localStorage.setItem("taskType", task)
 
     if (task === "写作") {
       router.push("/writer-info")
     } else {
-      // 阅读任务暂未实现
-      alert("阅读任务功能即将开放")
+      router.push("/reader-instructions")
     }
   }
 
