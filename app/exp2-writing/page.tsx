@@ -64,7 +64,7 @@ const getTopicAndReference = (discipline: string) => {
 
 三、相关文献
 1. Boyd, D. (2023). "It's Complicated: The Social Lives of Networked Teens". Yale University Press.
-2. 喻国明, 李彪 (2023). "社交媒体与青年亚文化认同". 新闻与传播研究, 30(2), 45-62.
+2. 喻国明, 李彪 (2023). "社交媒体与青年亚��化认同". 新闻与传播研究, 30(2), 45-62.
 3. Jenkins, H. et al. (2022). "Participatory Culture in a Networked Era". Polity Press.
 
 四、可能用到的数据
