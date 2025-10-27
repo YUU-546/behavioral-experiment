@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Check, Share2 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { submitToGoogleSheets } from "@/lib/google-sheets"
 
 type LabelType = "none" | "A" | "B" | "C" | "D"
 
@@ -402,7 +403,7 @@ export default function ReaderTaskPage() {
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) {
       alert("请选择20篇文章后再提交")
       return
@@ -418,16 +419,33 @@ export default function ReaderTaskPage() {
       }
     })
 
+    const startTime = localStorage.getItem("readerStartTime")
+    const endTime = new Date().toISOString()
+    const totalTime = startTime ? Math.floor((new Date(endTime).getTime() - new Date(startTime).getTime()) / 1000) : 0
+
     const experimentData = {
-      taskType: "阅读",
-      startTime: localStorage.getItem("readerStartTime"),
-      endTime: new Date().toISOString(),
-      forwardedArticles: forwardedList,
-      labelCounts,
-      totalForwarded: forwardedArticles.size,
+      taskType: "阅读" as const,
+      experimentType: "阅读任务" as const,
+      startTime,
+      endTime,
+      totalTime,
+      forwardedArticles: forwardedList.map((a) => ({
+        id: a.id,
+        title: a.title,
+        labelType: a.labelType,
+      })),
+      labelStats: labelCounts,
+      forwardedCount: forwardedArticles.size,
     }
 
-    localStorage.setItem("readerExperimentData", JSON.stringify(experimentData))
+    localStorage.setItem("experimentData", JSON.stringify(experimentData))
+
+    try {
+      await submitToGoogleSheets(experimentData)
+      console.log("[v0] 阅读任务数据已提交到 Google Sheets")
+    } catch (error) {
+      console.error("[v0] 提交数据失败:", error)
+    }
 
     router.push("/thank-you")
   }
