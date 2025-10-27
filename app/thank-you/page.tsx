@@ -4,33 +4,55 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle2, Download } from "lucide-react"
+import { CheckCircle2, Download, AlertCircle, RefreshCw } from "lucide-react"
 import { submitToGoogleSheets } from "@/lib/google-sheets"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function ThankYouPage() {
   const router = useRouter()
   const [experimentData, setExperimentData] = useState<any>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<{
+    success: boolean
+    message: string
+  } | null>(null)
 
   useEffect(() => {
     const data = localStorage.getItem("experimentData")
     if (data) {
       const parsedData = JSON.parse(data)
       setExperimentData(parsedData)
-
       submitDataToGoogleSheets(parsedData)
     }
   }, [])
 
   const submitDataToGoogleSheets = async (data: any) => {
     setIsSubmitting(true)
+    setSubmitStatus(null)
+
     try {
-      await submitToGoogleSheets(data)
-      console.log("[v0] 实验数据已成功提交到 Google Sheets")
+      const result = await submitToGoogleSheets(data)
+      setSubmitStatus(result)
+
+      if (result.success) {
+        console.log("[v0] 实验数据已成功提交到 Google Sheets")
+      } else {
+        console.error("[v0] 提交失败:", result.message)
+      }
     } catch (error) {
       console.error("[v0] 提交数据到 Google Sheets 失败:", error)
+      setSubmitStatus({
+        success: false,
+        message: error instanceof Error ? error.message : "提交失败",
+      })
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleRetrySubmit = () => {
+    if (experimentData) {
+      submitDataToGoogleSheets(experimentData)
     }
   }
 
@@ -140,6 +162,38 @@ export default function ThankYouPage() {
             )}
           </div>
 
+          {submitStatus && (
+            <Alert variant={submitStatus.success ? "default" : "destructive"}>
+              {submitStatus.success ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
+              <AlertDescription>
+                {submitStatus.message}
+                {!submitStatus.success && submitStatus.message.includes("未配置") && (
+                  <div className="mt-2 text-xs">
+                    <p>请按以下步骤配置：</p>
+                    <ol className="list-decimal list-inside mt-1 space-y-1">
+                      <li>在 Vercel 项目设置中找到 Environment Variables</li>
+                      <li>添加变量：NEXT_PUBLIC_GOOGLE_SHEETS_URL</li>
+                      <li>值为您的 Google Apps Script Web App URL</li>
+                      <li>保存后重新部署项目</li>
+                    </ol>
+                  </div>
+                )}
+                {!submitStatus.success && !submitStatus.message.includes("未配置") && (
+                  <Button
+                    onClick={handleRetrySubmit}
+                    variant="outline"
+                    size="sm"
+                    className="ml-2 bg-transparent"
+                    disabled={isSubmitting}
+                  >
+                    <RefreshCw className="h-3 w-3 mr-1" />
+                    重试
+                  </Button>
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="space-y-3">
             <Button onClick={downloadData} className="w-full bg-transparent" variant="outline">
               <Download className="h-4 w-4 mr-2" />
@@ -150,11 +204,11 @@ export default function ThankYouPage() {
             </Button>
           </div>
 
-          <div className="text-xs text-muted-foreground text-center">
+          <div className="text-xs text-muted-foreground text-center space-y-1">
             <p>实验数据已保存在浏览器本地存储中</p>
-            {isSubmitting && <p className="mt-1 text-blue-600">正在提交数据到服务器...</p>}
-            {!isSubmitting && <p className="mt-1 text-green-600">数据已自动提交到服务器</p>}
-            <p className="mt-1">研究人员可通过浏览器开发者工具的 localStorage 查看完整数据</p>
+            {isSubmitting && <p className="text-blue-600">正在提交数据到服务器...</p>}
+            <p>研究人员可通过浏览器开发者工具的 localStorage 查看完整数据</p>
+            <p className="text-orange-600 mt-2">请打开浏览器控制台（F12）查看详细的提交日志</p>
           </div>
         </CardContent>
       </Card>
