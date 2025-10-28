@@ -152,6 +152,19 @@ export default function ThankYouPage() {
         body: JSON.stringify(payload),
       })
 
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error("[v0] 奖励信息提交失败:", response.status, errorText)
+
+        try {
+          const errorJson = JSON.parse(errorText)
+          alert(`提交失败：${errorJson.message || `HTTP ${response.status} 错误`}`)
+        } catch {
+          alert(`提交失败：HTTP ${response.status} 错误。请检查 Google Sheets 配置。`)
+        }
+        return
+      }
+
       const result = await response.json()
 
       if (result.success) {
@@ -291,6 +304,32 @@ export default function ThankYouPage() {
                 {submitStatus.success ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
                 <AlertDescription>
                   {submitStatus.message}
+                  {!submitStatus.success && submitStatus.message.includes("404") && (
+                    <div className="mt-3 p-3 bg-red-50 rounded-md border border-red-200">
+                      <p className="font-semibold text-red-900 mb-2">⚠️ Google Apps Script URL 无效</p>
+                      <p className="text-sm text-red-800 mb-2">
+                        您的 Google Apps Script Web App URL 不存在或已失效（404错误）。
+                      </p>
+                      <p className="text-sm text-red-800 font-medium mb-2">请按以下步骤解决：</p>
+                      <ol className="list-decimal list-inside text-sm text-red-800 space-y-1 ml-2">
+                        <li>
+                          打开项目中的 <code className="bg-red-100 px-1 rounded">GOOGLE_SHEETS_SETUP_GUIDE.md</code>{" "}
+                          文件
+                        </li>
+                        <li>按照指南完整部署 Google Apps Script</li>
+                        <li>获取新的 Web App URL</li>
+                        <li>
+                          在 v0 的 Vars 中更新{" "}
+                          <code className="bg-red-100 px-1 rounded">NEXT_PUBLIC_GOOGLE_SHEETS_URL</code>
+                        </li>
+                        <li>重新部署项目</li>
+                      </ol>
+                      <p className="text-sm text-red-800 mt-2">
+                        详细步骤请查看：
+                        <code className="bg-red-100 px-1 rounded font-medium">GOOGLE_SHEETS_SETUP_GUIDE.md</code>
+                      </p>
+                    </div>
+                  )}
                   {!submitStatus.success && submitStatus.message.includes("未配置") && (
                     <div className="mt-2 text-xs">
                       <p>请按以下步骤配置：</p>
@@ -302,18 +341,20 @@ export default function ThankYouPage() {
                       </ol>
                     </div>
                   )}
-                  {!submitStatus.success && !submitStatus.message.includes("未配置") && (
-                    <Button
-                      onClick={handleRetrySubmit}
-                      variant="outline"
-                      size="sm"
-                      className="ml-2 bg-transparent"
-                      disabled={isSubmitting}
-                    >
-                      <RefreshCw className="h-3 w-3 mr-1" />
-                      重试
-                    </Button>
-                  )}
+                  {!submitStatus.success &&
+                    !submitStatus.message.includes("未配置") &&
+                    !submitStatus.message.includes("404") && (
+                      <Button
+                        onClick={handleRetrySubmit}
+                        variant="outline"
+                        size="sm"
+                        className="ml-2 bg-transparent"
+                        disabled={isSubmitting}
+                      >
+                        <RefreshCw className="h-3 w-3 mr-1" />
+                        重试
+                      </Button>
+                    )}
                 </AlertDescription>
               </Alert>
             )}
