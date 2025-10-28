@@ -53,11 +53,7 @@ export default function ThankYouPage() {
       submitDataToGoogleSheets(parsedData, submitKey)
     }
 
-    const rewardSubmittedFlag = localStorage.getItem("rewardInfoSubmitted")
-    if (rewardSubmittedFlag === "true") {
-      setRewardSubmitted(true)
-      setShowRewardForm(false)
-    }
+    localStorage.removeItem("rewardInfoSubmitted")
   }, [])
 
   const submitDataToGoogleSheets = async (data: any, submitKey: string) => {
