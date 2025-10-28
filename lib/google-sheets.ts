@@ -3,6 +3,7 @@ export interface ExperimentData {
   experimentType?: "实验①" | "实验②" | "实验③" | "阅读任务"
   grade?: string
   subject?: string
+  discipline?: string
   scoreRange?: string
   modificationTime?: number
   totalTime?: number
@@ -10,6 +11,7 @@ export interface ExperimentData {
   wordCount?: number
   addCorrectionLabel?: boolean
   modifiedContent?: string
+  originalReference?: string
   writingContent?: string
   surveyAnswers?: Record<string, number>
   forwardedArticles?: Array<{
@@ -19,6 +21,12 @@ export interface ExperimentData {
   }>
   forwardedCount?: number
   labelStats?: Record<string, number>
+  topic?: string
+  startTime?: string
+  experimentStartTime?: string
+  experimentEndTime?: string
+  rulesConfirmedTime?: string
+  writingCompletedTime?: string
 }
 
 export async function submitToGoogleSheets(data: ExperimentData): Promise<{
@@ -30,16 +38,21 @@ export async function submitToGoogleSheets(data: ExperimentData): Promise<{
   console.log("[v0] 正在通过 API 路由提交数据...")
 
   try {
-    console.log("[v0] 数据内容:", {
-      taskType: data.taskType,
-      experimentType: data.experimentType,
-      wordCount: data.wordCount,
-    })
+    console.log("[v0] 完整数据内容:", data)
+    console.log("[v0] modifiedContent 存在:", !!data.modifiedContent)
+    console.log("[v0] writingContent 存在:", !!data.writingContent)
+
+    if (data.modifiedContent) {
+      console.log("[v0] modifiedContent 长度:", data.modifiedContent.length)
+      console.log("[v0] modifiedContent 前50字:", data.modifiedContent.substring(0, 50))
+    }
 
     const payload = {
       timestamp: new Date().toISOString(),
       ...data,
     }
+
+    console.log("[v0] 发送到 API 的 payload:", payload)
 
     const response = await fetch(apiUrl, {
       method: "POST",
