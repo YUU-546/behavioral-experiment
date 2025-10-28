@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { Check, Share2 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { submitToGoogleSheets } from "@/lib/google-sheets"
 
 type LabelType = "none" | "A" | "B" | "C" | "D"
 
@@ -439,13 +438,6 @@ export default function ReaderTaskPage() {
     }
 
     localStorage.setItem("experimentData", JSON.stringify(experimentData))
-
-    try {
-      await submitToGoogleSheets(experimentData)
-      console.log("[v0] 阅读任务数据已提交到 Google Sheets")
-    } catch (error) {
-      console.error("[v0] 提交数据失败:", error)
-    }
 
     router.push("/thank-you")
   }
