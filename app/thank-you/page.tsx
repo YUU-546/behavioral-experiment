@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,24 +16,32 @@ export default function ThankYouPage() {
     success: boolean
     message: string
   } | null>(null)
-  const hasSubmitted = useRef(false)
 
   useEffect(() => {
-    if (hasSubmitted.current) {
-      console.log("[v0] 数据已经提交过，跳过重复提交")
-      return
-    }
-
     const data = localStorage.getItem("experimentData")
     if (data) {
       const parsedData = JSON.parse(data)
       setExperimentData(parsedData)
-      hasSubmitted.current = true
-      submitDataToGoogleSheets(parsedData)
+
+      const submitKey = `submitted_${parsedData.timestamp || Date.now()}`
+      const alreadySubmitted = localStorage.getItem(submitKey)
+
+      if (alreadySubmitted === "true") {
+        console.log("[v0] 数据已经提交过，跳过重复提交")
+        setSubmitStatus({
+          success: true,
+          message: "数据已成功提交（之前已提交）",
+        })
+        return
+      }
+
+      // 标记为正在提交，防止并发提交
+      localStorage.setItem(submitKey, "true")
+      submitDataToGoogleSheets(parsedData, submitKey)
     }
   }, [])
 
-  const submitDataToGoogleSheets = async (data: any) => {
+  const submitDataToGoogleSheets = async (data: any, submitKey: string) => {
     setIsSubmitting(true)
     setSubmitStatus(null)
 
@@ -45,9 +53,11 @@ export default function ThankYouPage() {
         console.log("[v0] 实验数据已成功提交到 Google Sheets")
       } else {
         console.error("[v0] 提交失败:", result.message)
+        localStorage.removeItem(submitKey)
       }
     } catch (error) {
       console.error("[v0] 提交数据到 Google Sheets 失败:", error)
+      localStorage.removeItem(submitKey)
       setSubmitStatus({
         success: false,
         message: error instanceof Error ? error.message : "提交失败",
@@ -59,8 +69,10 @@ export default function ThankYouPage() {
 
   const handleRetrySubmit = () => {
     if (experimentData) {
-      hasSubmitted.current = false
-      submitDataToGoogleSheets(experimentData)
+      const submitKey = `submitted_${experimentData.timestamp || Date.now()}`
+      localStorage.removeItem(submitKey)
+      localStorage.setItem(submitKey, "true")
+      submitDataToGoogleSheets(experimentData, submitKey)
     }
   }
 
