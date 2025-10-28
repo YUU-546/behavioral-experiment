@@ -37,6 +37,19 @@ export default function ThankYouPage() {
       const parsedData = JSON.parse(data)
       setExperimentData(parsedData)
 
+      console.log("[v0] thank-you 页面加载，读取 experimentData")
+      console.log("[v0] experimentData.taskType:", parsedData.taskType)
+      console.log("[v0] experimentData.experimentType:", parsedData.experimentType)
+      console.log("[v0] experimentData.modifiedContent 存在:", !!parsedData.modifiedContent)
+      if (parsedData.modifiedContent) {
+        console.log("[v0] modifiedContent 长度:", parsedData.modifiedContent.length)
+        console.log("[v0] modifiedContent 前100字:", parsedData.modifiedContent.substring(0, 100))
+      } else {
+        console.error("[v0] ⚠️ modifiedContent 不存在！这是问题所在！")
+      }
+      console.log("[v0] experimentData.writingContent 存在:", !!parsedData.writingContent)
+      console.log("[v0] 完整 experimentData 对象:", parsedData)
+
       const submitKey = `submitted_${parsedData.timestamp || Date.now()}`
       const alreadySubmitted = localStorage.getItem(submitKey)
 
@@ -61,6 +74,10 @@ export default function ThankYouPage() {
     setSubmitStatus(null)
 
     try {
+      console.log("[v0] 准备提交数据到 Google Sheets")
+      console.log("[v0] 提交的数据中 modifiedContent 存在:", !!data.modifiedContent)
+      console.log("[v0] 提交的数据中 writingContent 存在:", !!data.writingContent)
+
       const result = await submitToGoogleSheets(data)
       setSubmitStatus(result)
 
