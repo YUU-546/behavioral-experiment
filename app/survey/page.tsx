@@ -56,6 +56,11 @@ export default function SurveyPage() {
   useEffect(() => {
     // 检查是否完成了前面的步骤
     const experimentData = JSON.parse(localStorage.getItem("experimentData") || "{}")
+
+    console.log("[v0] 问卷页面加载，读取 experimentData")
+    console.log("[v0] experimentData.writingContent 存在:", !!experimentData.writingContent)
+    console.log("[v0] experimentData.modifiedContent 存在:", !!experimentData.modifiedContent)
+
     if (!experimentData.writingContent) {
       router.push("/")
       return
@@ -80,6 +85,11 @@ export default function SurveyPage() {
 
     // 保存问卷数据
     const experimentData = JSON.parse(localStorage.getItem("experimentData") || "{}")
+
+    console.log("[v0] 问卷页面提交，再次读取 experimentData")
+    console.log("[v0] experimentData.modifiedContent 仍然存在:", !!experimentData.modifiedContent)
+    console.log("[v0] experimentData.writingContent 仍然存在:", !!experimentData.writingContent)
+
     const finalData = {
       ...experimentData,
       surveyAnswers: answers,
@@ -87,7 +97,9 @@ export default function SurveyPage() {
     }
 
     localStorage.setItem("experimentData", JSON.stringify(finalData))
-    console.log("完整实验数据（含问卷）：", finalData)
+    console.log("[v0] 问卷完成，保存数据到 localStorage")
+    console.log("[v0] finalData.modifiedContent 存在:", !!finalData.modifiedContent)
+    console.log("[v0] 完整实验数据（含问卷）:", finalData)
 
     router.push("/thank-you")
   }
