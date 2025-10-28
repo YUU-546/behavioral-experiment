@@ -20,6 +20,9 @@ export default function WriterInfoPage() {
       return
     }
 
+    const oldSubmitKeys = Object.keys(localStorage).filter((key) => key.startsWith("submitted_"))
+    oldSubmitKeys.forEach((key) => localStorage.removeItem(key))
+
     // 保存基础信息到 localStorage
     const participantData = {
       taskType: localStorage.getItem("taskType"),
