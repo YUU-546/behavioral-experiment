@@ -11,6 +11,9 @@ export default function ReaderInstructionsPage() {
     const oldSubmitKeys = Object.keys(localStorage).filter((key) => key.startsWith("submitted_"))
     oldSubmitKeys.forEach((key) => localStorage.removeItem(key))
 
+    // 清除奖励信息提交标记，确保每次新实验都显示奖励表单
+    localStorage.removeItem("rewardInfoSubmitted")
+
     // 记录开始时间
     const startTime = new Date().toISOString()
     localStorage.setItem("readerStartTime", startTime)
