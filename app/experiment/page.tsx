@@ -90,7 +90,7 @@ const getTopicAndReference = (discipline: string) => {
 地方实践探索：在国家政策指引下，各地积极开展创新实践。例如，浙江湖州、衢州作为全国首批绿色金融改革创新试验区，探索构建了小微企业ESG评价系统；深圳的金融机构则利用区块链技术落地了数字供应链融资业务，精准支持绿色产业链上的中小企业。这些地方试点为全国范围的推广积累了宝贵经验。
 
 ### 具体政策文件
-1. 2023年7月：《关于深化制造业金融服务助力推进新���工业化的通知》
+1. 2023年7月：《关于深化制造业金融服务助力推进新型工业化的通知》
    国家金融监督管理总局、工业和信息化部、国家发展改革委
    推动制造业高端化、智能化、绿色化发展，明确要单列制造业信贷计划持续提升制造业中长期贷款占比。
 
@@ -151,13 +151,7 @@ const getTopicAndReference = (discipline: string) => {
 ### 文献四
 陈芳. (2019). 《网络匿名性与青少年社会信任感研究》. 心理科学进展， (5)， 789-795.
 
-文献内容：陈芳的研究探讨了网络匿名性对青少年社会信任感的影响。研究发现，虽然匿名性提供了表达自由，但也可能导致网络欺诈、谣言传播等负面现象，从而降低青少年对网络信息的信任度，并可能将这种不信任感投射到现实社会交往中。文章强调，网络环境对青少年社会信任感的塑造是复杂而双向的。
-
-## 可能用到的数据
-- 中国青少年网民规模及结构：根据中国互联网络信息中心（CNNIC）发布的《中国互联网络发展状况统计报告》，截至2024年6月，我国10–19岁网民规模为1.5亿，占网民总数的13.6%。
-- 青少年社交媒体使用时长及偏好：某项由中国青少年研究中心进行的调查显示，青少年日均使用社交媒体的时间为2.5小时，其中微信、抖音和B站是他们最常使用的平台。
-- 青少年网络身份认同的调查数据：一项针对高中生的问卷调查结果显示，有60%的学生认为自己在网络上的形象与现实生活中的形象存在差异，其中20%的学生表示这种差异较大。
-- 青少年网络欺凌事件发生率：国际某青少年网络安全机构发布报告称，全球每年有超过15%的青少年曾遭受不同形式的网络欺凌，且这一比例呈逐年上升趋势。`,
+文献内容：陈芳的研究探讨了网络匿名性对青少年社会信任感的影响。研究发现，虽然匿名性提供了表达自由，但也可能导致网络欺诈、谣言传播等负面现象，从而降低青少年对网络信息的信任度，并可能将这种不信任感投射到现实社会交往中。文章强调，网络环境对青少年社会信任感的塑造是复杂而双向的。`,
     },
   }
 
@@ -217,18 +211,23 @@ export default function ExperimentPage() {
     const endTime = Date.now()
     const modificationTime = Math.floor((endTime - startTime) / 1000)
 
-    // 保存实验数据
     const participantData = JSON.parse(localStorage.getItem("participantData") || "{}")
     const experimentData = {
       ...participantData,
+      taskType: "写作",
+      experimentType: "实验①",
       topic,
-      modifiedContent,
+      originalReference: reference, // 保存原始参考资料
+      modifiedContent, // 保存修改后的内容
       modificationTime,
       experimentEndTime: new Date().toISOString(),
     }
 
     localStorage.setItem("experimentData", JSON.stringify(experimentData))
-    console.log("修正阶段数据：", experimentData)
+    console.log("[v0] 修正阶段数据已保存到 localStorage")
+    console.log("[v0] modifiedContent 长度:", modifiedContent.length)
+    console.log("[v0] modifiedContent 前100字:", modifiedContent.substring(0, 100))
+    console.log("[v0] 完整 experimentData:", experimentData)
 
     // 跳转到撰写页面
     router.push("/writing")
