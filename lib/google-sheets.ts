@@ -51,6 +51,19 @@ export async function submitToGoogleSheets(data: ExperimentData): Promise<{
 
     console.log("[v0] API 响应状态:", response.status)
 
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error("[v0] API 返回错误:", response.status, errorText)
+
+      // 尝试解析错误消息
+      try {
+        const errorJson = JSON.parse(errorText)
+        return { success: false, message: errorJson.message || `HTTP ${response.status} 错误` }
+      } catch {
+        return { success: false, message: `HTTP ${response.status} 错误` }
+      }
+    }
+
     const result = await response.json()
 
     if (result.success) {
