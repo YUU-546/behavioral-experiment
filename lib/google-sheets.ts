@@ -25,18 +25,11 @@ export async function submitToGoogleSheets(data: ExperimentData): Promise<{
   success: boolean
   message: string
 }> {
-  const url = process.env.NEXT_PUBLIC_GOOGLE_SHEETS_URL
+  const apiUrl = "/api/submit-data"
 
-  console.log("[v0] Google Sheets URL:", url ? "已配置" : "未配置")
-
-  if (!url) {
-    const message = "Google Sheets URL 未配置。请在 Vercel 环境变量中添加 NEXT_PUBLIC_GOOGLE_SHEETS_URL"
-    console.warn("[v0] Google Sheets URL not configured")
-    return { success: false, message }
-  }
+  console.log("[v0] 正在通过 API 路由提交数据...")
 
   try {
-    console.log("[v0] 正在提交数据到 Google Sheets...")
     console.log("[v0] 数据内容:", {
       taskType: data.taskType,
       experimentType: data.experimentType,
@@ -48,27 +41,25 @@ export async function submitToGoogleSheets(data: ExperimentData): Promise<{
       ...data,
     }
 
-    const response = await fetch(url, {
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
-      redirect: "follow",
     })
 
-    console.log("[v0] 响应状态:", response.status)
-    console.log("[v0] 响应类型:", response.type)
+    console.log("[v0] API 响应状态:", response.status)
 
-    // Google Apps Script 会返回 302 重定向，这是正常的
-    if (response.status === 200 || response.status === 302 || response.redirected) {
+    const result = await response.json()
+
+    if (result.success) {
       console.log("[v0] 数据已成功提交到 Google Sheets")
       return { success: true, message: "数据已成功提交" }
+    } else {
+      console.error("[v0] 提交失败:", result.message)
+      return { success: false, message: result.message }
     }
-
-    const message = `提交失败，状态码: ${response.status}`
-    console.error("[v0]", message)
-    return { success: false, message }
   } catch (error) {
     const message = error instanceof Error ? error.message : "未知错误"
     console.error("[v0] 提交到 Google Sheets 失败:", message)
