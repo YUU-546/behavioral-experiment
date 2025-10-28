@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,12 +16,19 @@ export default function ThankYouPage() {
     success: boolean
     message: string
   } | null>(null)
+  const hasSubmitted = useRef(false)
 
   useEffect(() => {
+    if (hasSubmitted.current) {
+      console.log("[v0] 数据已经提交过，跳过重复提交")
+      return
+    }
+
     const data = localStorage.getItem("experimentData")
     if (data) {
       const parsedData = JSON.parse(data)
       setExperimentData(parsedData)
+      hasSubmitted.current = true
       submitDataToGoogleSheets(parsedData)
     }
   }, [])
@@ -52,6 +59,7 @@ export default function ThankYouPage() {
 
   const handleRetrySubmit = () => {
     if (experimentData) {
+      hasSubmitted.current = false
       submitDataToGoogleSheets(experimentData)
     }
   }
