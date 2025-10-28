@@ -17,6 +17,15 @@ export default function WritingPage() {
     // 获取实验数据
     const experimentData = JSON.parse(localStorage.getItem("experimentData") || "{}")
 
+    console.log("[v0] 写作页面加载，读取 experimentData")
+    console.log("[v0] experimentData.modifiedContent 存在:", !!experimentData.modifiedContent)
+    if (experimentData.modifiedContent) {
+      console.log("[v0] modifiedContent 长度:", experimentData.modifiedContent.length)
+      console.log("[v0] modifiedContent 前100字:", experimentData.modifiedContent.substring(0, 100))
+    } else {
+      console.error("[v0] ⚠️ modifiedContent 不存在！")
+    }
+
     if (!experimentData.modifiedContent) {
       router.push("/")
       return
@@ -42,8 +51,11 @@ export default function WritingPage() {
       if (!confirm) return
     }
 
-    // 保存撰写内容
     const experimentData = JSON.parse(localStorage.getItem("experimentData") || "{}")
+
+    console.log("[v0] 写作页面提交，再次读取 experimentData")
+    console.log("[v0] experimentData.modifiedContent 仍然存在:", !!experimentData.modifiedContent)
+
     const finalData = {
       ...experimentData,
       writingContent,
@@ -52,7 +64,9 @@ export default function WritingPage() {
     }
 
     localStorage.setItem("experimentData", JSON.stringify(finalData))
-    console.log("完整实验数据：", finalData)
+    console.log("[v0] 写作阶段完成，保存数据到 localStorage")
+    console.log("[v0] finalData.modifiedContent 存在:", !!finalData.modifiedContent)
+    console.log("[v0] 完整实验①数据:", finalData)
 
     router.push("/survey")
   }
