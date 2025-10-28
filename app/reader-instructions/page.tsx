@@ -3,13 +3,14 @@
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Info } from "lucide-react"
 
 export default function ReaderInstructionsPage() {
   const router = useRouter()
 
   const handleStart = () => {
+    const oldSubmitKeys = Object.keys(localStorage).filter((key) => key.startsWith("submitted_"))
+    oldSubmitKeys.forEach((key) => localStorage.removeItem(key))
+
     // 记录开始时间
     const startTime = new Date().toISOString()
     localStorage.setItem("readerStartTime", startTime)
@@ -24,13 +25,6 @@ export default function ReaderInstructionsPage() {
             <CardTitle className="text-2xl text-center">阅读任务说明</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription className="text-base">
-                本实验旨在验证"二次修正"标识对知识接收者信任度的影响，并进一步探究知识接收者对AI文章的什么部分被修正更敏感。
-              </AlertDescription>
-            </Alert>
-
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">实验情景</h3>
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
