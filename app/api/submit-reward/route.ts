@@ -39,13 +39,17 @@ export async function POST(request: NextRequest) {
     })
 
     const responseText = await response.text()
-    console.log("[API] Google Sheets 响应:", responseText)
 
     if (!response.ok) {
-      console.error("[API] Google Sheets 返回错误:", response.status, responseText)
+      console.error("[API] Google Sheets 返回错误:", response.status, responseText.substring(0, 200))
+
+      // 返回 JSON 格式的错误，但使用 200 状态码，让前端能正确解析
       return NextResponse.json(
-        { success: false, message: `Google Sheets 返回错误: ${response.status}` },
-        { status: response.status },
+        {
+          success: false,
+          message: `Google Sheets 返回错误: ${response.status}${response.status === 404 ? " (URL 不存在或已失效)" : ""}`,
+        },
+        { status: 200 }, // 使用 200 状态码，确保前端能解析 JSON
       )
     }
 
@@ -54,7 +58,7 @@ export async function POST(request: NextRequest) {
       result = JSON.parse(responseText)
     } catch (e) {
       console.error("[API] 解析响应失败:", e)
-      return NextResponse.json({ success: false, message: "解析 Google Sheets 响应失败" }, { status: 500 })
+      return NextResponse.json({ success: false, message: "解析 Google Sheets 响应失败" }, { status: 200 })
     }
 
     console.log("[API] 奖励信息提交成功")
@@ -66,7 +70,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: error instanceof Error ? error.message : "未知错误",
       },
-      { status: 500 },
+      { status: 200 }, // 使用 200 状态码，确保前端能解析 JSON
     )
   }
 }
