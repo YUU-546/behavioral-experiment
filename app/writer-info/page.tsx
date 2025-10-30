@@ -26,11 +26,10 @@ export default function WriterInfoPage() {
     // 清除奖励信息提交标记，确保每次新实验都显示奖励表单
     localStorage.removeItem("rewardInfoSubmitted")
 
-    // 保存基础信息到 localStorage
     const participantData = {
       taskType: localStorage.getItem("taskType"),
       grade,
-      discipline,
+      subject: discipline, // 改为 subject
       scoreRange,
       experimentType,
       startTime: new Date().toISOString(),
