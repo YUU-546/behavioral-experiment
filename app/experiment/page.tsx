@@ -192,6 +192,17 @@ export default function ExperimentPage() {
     const modificationTime = Math.floor((endTime - startTime) / 1000)
 
     const participantData = JSON.parse(localStorage.getItem("participantData") || "{}")
+
+    const rulesConfirmedTime = participantData.rulesConfirmedTime
+    const experimentEndTime = new Date().toISOString()
+    let totalTime = 0
+
+    if (rulesConfirmedTime) {
+      const rulesTime = new Date(rulesConfirmedTime).getTime()
+      const endTimeMs = new Date(experimentEndTime).getTime()
+      totalTime = Math.floor((endTimeMs - rulesTime) / 1000)
+    }
+
     const experimentData = {
       ...participantData,
       taskType: "写作",
@@ -200,13 +211,15 @@ export default function ExperimentPage() {
       originalReference: reference, // 保存原始参考资料
       modifiedContent, // 保存修改后的内容
       modificationTime,
-      experimentEndTime: new Date().toISOString(),
+      totalTime, // 添加实验完成总时间
+      experimentEndTime,
     }
 
     localStorage.setItem("experimentData", JSON.stringify(experimentData))
     console.log("[v0] 修正阶段数据已保存到 localStorage")
     console.log("[v0] modifiedContent 长度:", modifiedContent.length)
     console.log("[v0] modifiedContent 前100字:", modifiedContent.substring(0, 100))
+    console.log("[v0] totalTime (秒):", totalTime)
     console.log("[v0] 完整 experimentData:", experimentData)
 
     // 跳转到撰写页面
