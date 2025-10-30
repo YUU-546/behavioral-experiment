@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { DollarSign } from "lucide-react"
 
 export default function ReaderInstructionsPage() {
   const router = useRouter()
@@ -88,6 +89,15 @@ export default function ReaderInstructionsPage() {
                 <li>点击文章右侧的"转发"按钮即可完成转发</li>
                 <li>选择满20篇后方可提交实验结果</li>
               </ul>
+            </div>
+
+            <div className="bg-green-50 p-6 rounded-lg space-y-3 border-2 border-green-200">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <DollarSign className="h-5 w-5 text-green-600" />
+                奖励机制
+              </h3>
+              <p className="text-base font-semibold text-green-800">参加阅读实验奖励：5元</p>
+              <p className="text-sm text-muted-foreground">完成阅读任务并提交后即可获得奖励</p>
             </div>
 
             <Button onClick={handleStart} className="w-full h-12 text-lg" size="lg">
