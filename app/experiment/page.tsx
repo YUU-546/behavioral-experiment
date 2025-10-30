@@ -10,11 +10,7 @@ import { Clock, FileText } from "lucide-react"
 // 根据学科获取选题和参考资料
 const getTopicAndReference = (subject: string) => {
   const topics = {
-    理工类: {
-      topic: "基于深度学习的图像识别技术在智能制造中的应用研究",
-      reference: `# AI生成参考资料
-
-理工类: {
+     理工类: {
       topic: "基于深度学习的图像识别技术在智能制造中的应用研究",
       reference: `# AI生成参考资料
 
