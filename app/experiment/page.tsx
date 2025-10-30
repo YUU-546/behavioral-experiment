@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Clock, FileText } from "lucide-react"
 
 // 根据学科获取选题和参考资料
-const getTopicAndReference = (discipline: string) => {
+const getTopicAndReference = (subject: string) => {
   const topics = {
     理工类: {
       topic: "基于深度学习的图像识别技术在智能制造中的应用研究",
@@ -135,12 +135,12 @@ const getTopicAndReference = (discipline: string) => {
     },
   }
 
-  return topics[discipline as keyof typeof topics] || topics["理工类"]
+  return topics[subject as keyof typeof topics] || topics["理工类"]
 }
 
 export default function ExperimentPage() {
   const router = useRouter()
-  const [discipline, setDiscipline] = useState("")
+  const [subject, setSubject] = useState("")
   const [topic, setTopic] = useState("")
   const [reference, setReference] = useState("")
   const [modifiedContent, setModifiedContent] = useState("")
@@ -156,7 +156,7 @@ export default function ExperimentPage() {
       return
     }
 
-    setDiscipline(participantData.discipline)
+    setSubject(participantData.subject)
     const { topic: selectedTopic, reference: selectedReference } = getTopicAndReference(participantData.discipline)
     setTopic(selectedTopic)
     setReference(selectedReference)
