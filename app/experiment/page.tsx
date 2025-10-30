@@ -14,6 +14,10 @@ const getTopicAndReference = (subject: string) => {
       topic: "基于深度学习的图像识别技术在智能制造中的应用研究",
       reference: `# AI生成参考资料
 
+理工类: {
+      topic: "基于深度学习的图像识别技术在智能制造中的应用研究",
+      reference: `# AI生成参考资料
+
 ## 现实背景
 随着工业4.0时代的到来，智能制造已成为全球制造业转型升级的核心驱动力。据《中国制造2025》报告显示，到2025年，我国智能制造装备市场规模预计将超过3万亿元，年复合增长率达15%以上。图像识别技术作为智能制造的关键组成部分，在产品质量检测、生产过程监控、机器人导航和供应链优化等方面发挥着日益重要的作用。全球范围内，德国“工业4.0”战略和美国“再工业化”计划均强调计算机视觉技术的集成，以提升生产效率和灵活性。然而，实际应用中仍面临数据异构性、环境干扰和实时性要求等挑战，这促使深度学习模型如卷积神经网络（CNN）和生成对抗网络（GAN）的进一步创新。
 
@@ -151,13 +155,13 @@ export default function ExperimentPage() {
     // 获取被试者信息
     const participantData = JSON.parse(localStorage.getItem("participantData") || "{}")
 
-    if (!participantData.discipline) {
+    if (!participantData.subject) {
       router.push("/")
       return
     }
 
     setSubject(participantData.subject)
-    const { topic: selectedTopic, reference: selectedReference } = getTopicAndReference(participantData.discipline)
+    const { topic: selectedTopic, reference: selectedReference } = getTopicAndReference(participantData.subject)
     setTopic(selectedTopic)
     setReference(selectedReference)
 
@@ -252,7 +256,7 @@ export default function ExperimentPage() {
           </CardHeader>
           <CardContent>
             <p className="text-lg font-medium text-blue-700">{topic}</p>
-            <p className="text-sm text-muted-foreground mt-2">学科类别：{discipline}</p>
+            <p className="text-sm text-muted-foreground mt-2">学科类别：{subject}</p>
           </CardContent>
         </Card>
 
