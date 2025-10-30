@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle2, Tag } from "lucide-react"
+import { CheckCircle2, Tag, DollarSign, Clock, Target, Award } from "lucide-react"
 
 export default function Exp2RulesPage() {
   const router = useRouter()
@@ -54,14 +54,64 @@ export default function Exp2RulesPage() {
               </ul>
             </div>
 
-            <div className="bg-green-50 p-6 rounded-lg space-y-4">
+            <div className="bg-green-50 p-6 rounded-lg space-y-4 border-2 border-green-200">
               <h3 className="font-semibold text-lg flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                奖励机制
+                <DollarSign className="h-5 w-5 text-green-600" />
+                奖励机制（最高40元）
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                <strong>越快完成文章的写作，奖励越丰厚。</strong>添加了修正标签的文章会有更多人浏览，奖励也会更丰厚。
-              </p>
+
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <Target className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-800">基础奖励：10元</p>
+                    <p className="text-sm text-muted-foreground">能够按照规则规范完成实验</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Tag className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-800">二次修正奖励：5元</p>
+                    <p className="text-sm text-muted-foreground">对AI参考资料进行人工检查，并选择添加二次修正标识</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Award className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-800">文章质量奖励：最高15元</p>
+                    <p className="text-sm text-muted-foreground mt-1">根据项目教授指定的标准进行评级：</p>
+                    <ul className="text-sm text-muted-foreground space-y-1 mt-1">
+                      <li>• 优秀：15元</li>
+                      <li>• 好：12元</li>
+                      <li>• 良：9元</li>
+                      <li>• 中：6元</li>
+                      <li>• 差：3元</li>
+                      <li>• 不及格：0元</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-semibold text-green-800">时间奖励：最高10元</p>
+                    <p className="text-sm text-muted-foreground mt-1">根据全部参与者的实验时间排序（由短到长）：</p>
+                    <ul className="text-sm text-muted-foreground space-y-1 mt-1">
+                      <li>• 排名前10%：额外奖励10元</li>
+                      <li>• 排名前20%：额外奖励5元</li>
+                      <li>• 排名前30%：额外奖励2元</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-100 p-3 rounded mt-4">
+                <p className="text-sm font-medium text-green-800">
+                  💡 提示：越快完成文章的写作，奖励越丰厚。添加了修正标签的文章会有更多人浏览，奖励也会更丰厚！
+                </p>
+              </div>
             </div>
           </div>
 
