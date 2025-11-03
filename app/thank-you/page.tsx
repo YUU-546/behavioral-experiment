@@ -22,10 +22,7 @@ export default function ThankYouPage() {
   const [showRewardForm, setShowRewardForm] = useState(true)
   const [rewardInfo, setRewardInfo] = useState({
     name: "",
-    idCard: "",
-    bank: "",
-    bankAccount: "",
-    phone: "",
+    wechat: "",
   })
   const [rewardFormErrors, setRewardFormErrors] = useState<Record<string, string>>({})
   const [isSubmittingReward, setIsSubmittingReward] = useState(false)
@@ -115,26 +112,10 @@ export default function ThankYouPage() {
       errors.name = "请输入姓名"
     }
 
-    if (!rewardInfo.idCard.trim()) {
-      errors.idCard = "请输入身份证号"
-    } else if (!/^\d{17}[\dXx]$/.test(rewardInfo.idCard)) {
-      errors.idCard = "身份证号格式不正确（应为18位）"
-    }
-
-    if (!rewardInfo.bank.trim()) {
-      errors.bank = "请输入开户行"
-    }
-
-    if (!rewardInfo.bankAccount.trim()) {
-      errors.bankAccount = "请输入银行账号"
-    } else if (!/^\d{10,25}$/.test(rewardInfo.bankAccount)) {
-      errors.bankAccount = "银行账号格式不正确（应为10-25位数字）"
-    }
-
-    if (!rewardInfo.phone.trim()) {
-      errors.phone = "请输入联系电话"
-    } else if (!/^1[3-9]\d{9}$/.test(rewardInfo.phone)) {
-      errors.phone = "手机号格式不正确"
+    if (!rewardInfo.wechat.trim()) {
+      errors.wechat = "请输入微信号"
+    } else if (rewardInfo.wechat.length < 3) {
+      errors.wechat = "微信号长度不能少于3个字符"
     }
 
     setRewardFormErrors(errors)
@@ -184,7 +165,7 @@ export default function ThankYouPage() {
         setRewardSubmitted(true)
         setShowRewardForm(false)
         localStorage.setItem("rewardInfoSubmitted", "true")
-        alert("奖励信息提交成功！我们将尽快处理您的奖励发放。")
+        alert("奖励信息提交成功！实验负责人会在实验结果统一得出后添加您的微信发放奖励。")
       } else {
         alert(`提交失败：${result.message}`)
       }
@@ -403,10 +384,11 @@ export default function ThankYouPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Alert className="bg-red-50 border-red-200">
-                <AlertCircle className="h-4 w-4 text-red-600" />
-                <AlertDescription className="text-red-900">
-                  <strong>重要提示：</strong>请务必准确填写以下信息，信息不正确将无法正常发放奖励金。
+              <Alert className="bg-blue-50 border-blue-200">
+                <AlertCircle className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-900">
+                  <strong>重要提示：</strong>
+                  请一定准确填写您的姓名和微信号。等实验结果统一得出后，会有实验负责人添加您的微信发放奖励。
                 </AlertDescription>
               </Alert>
 
@@ -424,55 +406,16 @@ export default function ThankYouPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="idCard">身份证号 *</Label>
+                  <Label htmlFor="wechat">微信号 *</Label>
                   <Input
-                    id="idCard"
-                    placeholder="请输入18位身份证号"
-                    value={rewardInfo.idCard}
-                    onChange={(e) => setRewardInfo({ ...rewardInfo, idCard: e.target.value })}
-                    maxLength={18}
-                    className={rewardFormErrors.idCard ? "border-red-500" : ""}
+                    id="wechat"
+                    placeholder="请输入您的微信号"
+                    value={rewardInfo.wechat}
+                    onChange={(e) => setRewardInfo({ ...rewardInfo, wechat: e.target.value })}
+                    className={rewardFormErrors.wechat ? "border-red-500" : ""}
                   />
-                  {rewardFormErrors.idCard && <p className="text-sm text-red-600">{rewardFormErrors.idCard}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bank">开户行 *</Label>
-                  <Input
-                    id="bank"
-                    placeholder="例如：中国工商银行北京分行"
-                    value={rewardInfo.bank}
-                    onChange={(e) => setRewardInfo({ ...rewardInfo, bank: e.target.value })}
-                    className={rewardFormErrors.bank ? "border-red-500" : ""}
-                  />
-                  {rewardFormErrors.bank && <p className="text-sm text-red-600">{rewardFormErrors.bank}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bankAccount">银行账号 *</Label>
-                  <Input
-                    id="bankAccount"
-                    placeholder="请输入银行卡号"
-                    value={rewardInfo.bankAccount}
-                    onChange={(e) => setRewardInfo({ ...rewardInfo, bankAccount: e.target.value })}
-                    className={rewardFormErrors.bankAccount ? "border-red-500" : ""}
-                  />
-                  {rewardFormErrors.bankAccount && (
-                    <p className="text-sm text-red-600">{rewardFormErrors.bankAccount}</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone">联系电话 *</Label>
-                  <Input
-                    id="phone"
-                    placeholder="请输入11位手机号"
-                    value={rewardInfo.phone}
-                    onChange={(e) => setRewardInfo({ ...rewardInfo, phone: e.target.value })}
-                    maxLength={11}
-                    className={rewardFormErrors.phone ? "border-red-500" : ""}
-                  />
-                  {rewardFormErrors.phone && <p className="text-sm text-red-600">{rewardFormErrors.phone}</p>}
+                  {rewardFormErrors.wechat && <p className="text-sm text-red-600">{rewardFormErrors.wechat}</p>}
+                  <p className="text-xs text-muted-foreground">请确保微信号准确无误，以便实验负责人添加您</p>
                 </div>
               </div>
 
@@ -512,9 +455,14 @@ export default function ThankYouPage() {
         {rewardSubmitted && (
           <Card className="border-2 border-green-200 bg-green-50/50">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-center gap-2 text-green-700">
-                <CheckCircle2 className="h-5 w-5" />
-                <p className="font-medium">奖励信息已提交，我们将尽快处理您的奖励发放</p>
+              <div className="flex flex-col items-center justify-center gap-3 text-green-700">
+                <CheckCircle2 className="h-6 w-6" />
+                <div className="text-center space-y-1">
+                  <p className="font-medium">奖励信息已提交成功</p>
+                  <p className="text-sm text-green-600">
+                    实验负责人会在实验结果统一得出后添加您的微信发放奖励，请耐心等待
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
