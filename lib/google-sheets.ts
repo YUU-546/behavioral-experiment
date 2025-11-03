@@ -29,6 +29,14 @@ export interface ExperimentData {
   writingCompletedTime?: string
 }
 
+export interface RewardInfo {
+  name: string
+  wechat: string
+  experimentTimestamp?: string
+  experimentType?: string
+  taskType?: string
+}
+
 export async function submitToGoogleSheets(data: ExperimentData): Promise<{
   success: boolean
   message: string
