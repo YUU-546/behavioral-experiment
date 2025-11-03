@@ -14,21 +14,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: "Google Sheets URL 未配置" }, { status: 500 })
     }
 
-    // 构造奖励信息数据，使用特殊标记以便在 Google Sheets 中识别
     const rewardData = {
       type: "REWARD_INFO",
       timestamp: data.timestamp,
       experimentTimestamp: data.experimentTimestamp,
       taskType: data.taskType,
       experimentType: data.experimentType,
-      name: data.name,
-      idCard: data.idCard,
-      bank: data.bank,
-      bankAccount: data.bankAccount,
-      phone: data.phone,
+      name: data.name, // 姓名
+      wechat: data.wechat, // 微信号
     }
 
     console.log("[API] 正在转发奖励信息到 Google Sheets...")
+    console.log("[API] 奖励数据:", JSON.stringify(rewardData, null, 2))
 
     const response = await fetch(googleSheetsUrl, {
       method: "POST",
