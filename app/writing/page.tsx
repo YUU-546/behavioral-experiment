@@ -103,6 +103,9 @@ export default function WritingPage() {
                 <li>需包含现实背景和理论背景</li>
                 <li>需要有文献引用列表</li>
               </ul>
+              <p className="font-bold text-blue-700 mt-3">
+                ⚠️ 注意：这里只提交完成的800字左右的项目背景写作内容，不包含修正后的参考资料
+              </p>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
